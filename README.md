@@ -1,43 +1,49 @@
 # House Rent Server
 
-无忧租房后端数据抓取，租房信息查询的service。 使用Node.js 搭建，运行于leancloud。
+The code of extract/parse the house rent information from [duoban](https://www.douban.com/group/beijingzufang/discussion)
+Provide the query service for house rent information.
+Build by Node.js, run on leancloud.
 
-## 本地运行
+The House Rent app code: [HouseRent](https://github.com/rolai/HouseRent)
 
-安装依赖：
+## Run and develop
+
+Install the related packages:
 
 ```
 npm install
 ```
 
-关联应用：
+Connect to the [leancloud](https://leancloud.cn/) app.
 
 ```
 lean app add origin <appId>
 ```
 
-启动service：
+Start the service：
 
 ```
 lean up
 ```
 
-应用即可启动运行：[localhost:3000](http://localhost:3000)
+Service runs on：[localhost:3000](http://localhost:3000)
 
-手动触发抓取豆瓣租房信息命令:
+## Extract the information manually
+
+Extract the house rent information from douban:
 
 ```
 node ./local/parser.js
 ```
 
-手动触发抓取链家二手房交易数据:
+Extract the sell information for second hand house or apartments from LinkedHome:
 
 ```
 node ./local/parseLinkedHome.js
 ```
 
 
-## 租房信息查询服务
+## Query the house rent information
 
 ### POST  https://leancloud.cn/1.1/functions/query
 
@@ -51,10 +57,10 @@ Request:
 }
 ```
 
-`page` 和 `pageSize` 是可选的。 `pageSize` 最大为30.
-`city` 目前支持： 北京、上海、广州、深圳、杭州、成都、武汉。
+`page` and  `pageSize` is optional。 `pageSize` max value is 30.
+Currently, the `city` can be one of: 北京、上海、广州、深圳、杭州、成都、武汉。
 
-Request header 里得包含：
+Request header must include: 
 
 ```
 X-LC-Id: XXXX, // leancloud appId
