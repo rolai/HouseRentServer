@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var todos = require('./routes/todos');
 var AV = require('leanengine');
+var cloud = require('./cloud');
 
 var app = express();
 
@@ -15,9 +16,9 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 // 加载云函数定义
-require('./cloud');
+app.use(cloud);
 // 加载云引擎中间件
-app.use(AV.express());
+//app.use(AV.Cloud());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

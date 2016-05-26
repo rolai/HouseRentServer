@@ -1,0 +1,91 @@
+{
+    "websites": [
+        {
+            "source": "bjzf",
+            "url": "https://www.douban.com/group/beijingzufang/discussion",
+            "city": "北京"
+        },
+        {
+            "source": "shzf",
+            "url": "https://www.douban.com/group/shzf/discussion",
+            "city": "上海"
+        },
+        {
+            "source": "gzzf",
+            "url": "https://www.douban.com/group/gz020/discussion",
+            "city": "广州"
+        },
+        {
+            "source": "hzzf",
+            "url": "https://www.douban.com/group/HZhome/discussion",
+            "city": "杭州"
+        },
+        {
+            "source": "szzf",
+            "url": "https://www.douban.com/group/szsh/discussion",
+            "city": "深圳"
+        },
+        {
+            "source": "cdzf",
+            "url": "https://www.douban.com/group/CDzufang/discussion",
+            "city": "成都"
+        },
+        {
+            "source": "whzf",
+            "url": "https://www.douban.com/group/551524/discussion",
+            "city": "武汉"
+        }
+    ],
+    "linkedHome": [
+        {
+            "source": "bj",
+            "url": "http://bj.lianjia.com/",
+            "city": "北京"
+        },
+        {
+            "source": "sh",
+            "url": "http://sh.lianjia.com/",
+            "city": "上海"
+        },
+        {
+            "source": "gz",
+            "url": "http://gz.lianjia.com/",
+            "city": "广州"
+        },
+        {
+            "source": "sz",
+            "url": "http://sz.lianjia.com/",
+            "city": "深圳"
+        },
+        {
+            "source": "su",
+            "url": "http://su.lianjia.com/",
+            "city": "苏州"
+        },
+        {
+            "source": "cd",
+            "url": "http://cd.lianjia.com/",
+            "city": "成都"
+        },
+        {
+            "source": "nj",
+            "url": "http://nj.lianjia.com/",
+            "city": "南京"
+        },
+        {
+            "source": "tj",
+            "url": "http://tj.lianjia.com/",
+            "city": "天津"
+        },
+        {
+            "source": "hz",
+            "url": "http://hz.lianjia.com/",
+            "city": "杭州"
+        },
+        {
+            "source": "xm",
+            "url": "http://xm.lianjia.com/",
+            "city": "厦门"
+        }
+    ]
+}

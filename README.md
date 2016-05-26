@@ -1,16 +1,8 @@
-# Node.js Getting started
+# House Rent Server
 
-一个简单的使用 Express 4 的 Node.js 应用。
-可以运行在 LeanEngine Node.js 运行时环境。
+无忧租房后端数据抓取，租房信息查询的service。 使用Node.js 搭建，运行于leancloud。
 
 ## 本地运行
-
-首先确认本机已经安装 [Node.js](http://nodejs.org/) 运行环境和 [LeanCloud 命令行工具](https://www.leancloud.cn/docs/leanengine_cli.html)，然后执行下列指令：
-
-```
-$ git clone git@github.com:leancloud/node-js-getting-started.git
-$ cd node-js-getting-started
-```
 
 安装依赖：
 
@@ -24,9 +16,7 @@ npm install
 lean app add origin <appId>
 ```
 
-这里的 appId 填上你在 LeanCloud 上创建的某一应用的 appId 即可。origin 则有点像 Git 里的 remote 名称。
-
-启动项目：
+启动service：
 
 ```
 lean up
@@ -34,22 +24,63 @@ lean up
 
 应用即可启动运行：[localhost:3000](http://localhost:3000)
 
-## 部署到 LeanEngine
+手动触发抓取豆瓣租房信息命令:
 
-部署到预备环境（若无预备环境则直接部署到生产环境）：
 ```
-lean deploy
-```
-
-将预备环境的代码发布到生产环境：
-```
-lean publish
+node ./local/parser.js
 ```
 
-## 相关文档
+手动触发抓取链家二手房交易数据:
 
-* [LeanEngine 指南](https://leancloud.cn/docs/leanengine_guide-node.html)
-* [JavaScript 指南](https://leancloud.cn/docs/js_guide.html)
-* [JavaScript SDK API](https://leancloud.cn/api-docs/javascript/index.html)
-* [命令行工具详解](https://leancloud.cn/docs/cloud_code_commandline.html)
-* [LeanEngine FAQ](https://leancloud.cn/docs/cloud_code_faq.html)
+```
+node ./local/parseLinkedHome.js
+```
+
+
+## 租房信息查询服务
+
+### POST  https://leancloud.cn/1.1/functions/query
+
+Request:      
+```
+{
+    "city":  "北京",
+    "keyword": "个人",
+    "page": 0,
+    "pageSize": 10
+}
+```
+
+`page` 和 `pageSize` 是可选的。 `pageSize` 最大为30.
+`city` 目前支持： 北京、上海、广州、深圳、杭州、成都、武汉。
+
+Request header 里得包含：
+
+```
+X-LC-Id: XXXX, // leancloud appId
+X-LC-Key: XXX, // leancloud appkey
+X-LC-Prod: 1,
+Content-Type: application/json; charset=utf-8
+
+````
+
+
+Response:
+```json
+{
+    "result": [
+        {
+            "content": "1，房子位于蒲安西里，走路正常速度7分钟到地铁5号线，5分钟到14号线，附近特别多公交车（运通102、特11、7、525、986、25、39、43、599、685、特12、120、122、723、等等等等），10分钟到三环刘家窑桥、8分钟到二环天坛南门，北京任何角落的通勤都能帮你节省时间\r\n2，房子装修精良，一面墙都做了壁橱，木质地板，你的小窝住着会很舒心\r\n3，房子内所有的电器你想得到用得上都有，冰箱洗衣机还是刚换新的，微波炉电视随便用，燃气不用说肯定有，24小时燃气热水器，洗澡脱衣服的工夫热水就来了。这样的配置住着绝对顺心方便\r\n4，房子不临街，免去车鸣困扰，五楼，开窗户就是大树，空气也好，治安不错，住着放心\r\n5，正规的房子，只住三户，洗澡厕所不用排队，早上也不用为了墙厕所而早起半个小时，住着省心\r\n6，你的室友都是正规上班族，最低学历大学毕业，一个室友经常出差，跟住两户没什么区别。\r\n7，房子是跟个人签，无中介费，提前一个月退房无损坏情况下全额退押金，因为住的舒服我在这里住了五年了都没有搬过家，这样的房子绝对值得你备选\r\n8，诚实的说房子是90年代的装修，但绝对是精装修，所以如果你想住特别新的房子可能满足不了你，但房子重要的不是新旧，而是住的舒不舒服，所以还是建议你来看看~~~\r\n\r\n房子价格为2000元，押一付三，提前一个月退房退押金，希望你是男生，有稳定工作，可以联系我：18611748036，因我经常出差，也可联系13910278001.也可以加我第一个电话微信也可以\r\n\n\n随时来看房哦",
+            "city": "北京",
+            "source": "bjzf",
+            "title": "帅哥福利-双地铁精装修主卧出租-限男生",
+            "updateTime": "05-25 18:07",
+            "url": "https://www.douban.com/group/topic/64691573/",
+            "postTime": "2014-10-25 14:45:33",
+            "objectId": "5745799cc26a38006b933f6b",
+            "createdAt": "2016-05-25T10:08:28.038Z",
+            "updatedAt": "2016-05-25T10:08:28.038Z"
+        }
+    ]
+}
+```
