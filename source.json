@@ -16,24 +16,9 @@
             "city": "广州"
         },
         {
-            "source": "hzzf",
-            "url": "https://www.douban.com/group/HZhome/discussion",
-            "city": "杭州"
-        },
-        {
             "source": "szzf",
             "url": "https://www.douban.com/group/szsh/discussion",
             "city": "深圳"
-        },
-        {
-            "source": "cdzf",
-            "url": "https://www.douban.com/group/CDzufang/discussion",
-            "city": "成都"
-        },
-        {
-            "source": "whzf",
-            "url": "https://www.douban.com/group/551524/discussion",
-            "city": "武汉"
         }
     ],
     "linkedHome": [

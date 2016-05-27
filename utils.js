@@ -17,9 +17,10 @@ var utils = {
         } else {
           var house = AV.Object.new('House');
           house.set('title', info.title);
-          house.set('content', info.text);
+          house.set('content', info.content);
           house.set('postTime', info.postTime);
           house.set('updateTime', info.updateTime);
+          house.set('prices', info.prices);
           house.set('source', source);
           house.set('city', city);
           house.set('url', info.url);
@@ -43,6 +44,7 @@ var utils = {
       return utils.parse(url)
       .then(function(houseInfoList) {
         var needMore = true;
+        console.log("Extrat " + houseInfoList.length + " items from " + website.city);
         _.each(houseInfoList, function(info){
           if(info.updateTime >= beforeTime) {
             utils.saveHouseInfo(info, website.source, website.city);
@@ -55,6 +57,7 @@ var utils = {
           utils.sleep(1000);
           return utils.dealOnePage(website, startPos + 25, beforeTime);
         } else {
+          console.log( website.city + " done" );
           return AV.Promise.as();
         }
       })
@@ -100,9 +103,12 @@ var utils = {
         startIndex = endIndex + rule.surfix.length;
       })
 
-      if(info.title) {
+      if(info.title) { //prase price from title
         var prices = utils.extractPrice(info.title);
-        if(prices.length > 0) info.prices = prices;
+        if(prices.length > 0) {
+            info.prices = prices;
+            console.log(info);
+        }
       }
       return info;
    },
@@ -157,14 +163,14 @@ var utils = {
    },
 
    extractPrice: function(text){
-     var patt = /\d{2,5}元/g
+     var patt = /(\d{3,5})元/g
      var prices = [];
      var res;
      while ((res = patt.exec(text)) !== null) {
-       prices.push(res[0].substr(0, res[0].length - 1));
+       prices.push(parseInt(res[1]));
      }
 
-     return prices;
+     return _.uniq(prices);
    },
 
    parse: function(url) {
@@ -177,10 +183,13 @@ var utils = {
          if(info.url){
            var promise = utils.requestToPromise(info.url).then( function(body) {
              houseInfoList[index].postTime = utils.parsePostTime(body);
-             houseInfoList[index].text = utils.parseHouseDescription(body);
-             if(houseInfoList[index].prices) {
-               var prices = utils.extractPrice(houseInfoList[index].text);
-               if(prices.length > 0) houseInfoList[index].prices = prices;
+             houseInfoList[index].content = utils.parseHouseDescription(body);
+             if(!houseInfoList[index].prices) { // parse price from content
+               var prices = utils.extractPrice(houseInfoList[index].content);
+               if(prices.length > 0) {
+                   houseInfoList[index].prices = prices;
+                   console.log(houseInfoList[index]);
+               }
              }
              return AV.Promise.as();
            });

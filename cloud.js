@@ -27,6 +27,7 @@ AV.Cloud.define('parse', function(request, response) {
 
       return utils.dealOnePage(website, 0, beforeTime);
     })
+    utils.sleep(1000);
   })
 
   response.success('fine!');
@@ -38,18 +39,6 @@ AV.Cloud.define('query', function(request, response) {
   if(count > 30) count = 30;
   var page = data.page || 0;
   var skip = page * count;
-/*
-  var query = new AV.SearchQuery('House');
-  query.queryString(data.keyword);
-  query.find().then(function(results) {
-       console.log("Find " + query.hits() + " docs.");
-       response.success(results);
-       //处理 results 结果
-   }).catch(function(err){
-       //处理 err
-       response.success(err);
-   });
-*/
 
   var sql = "select * from House where city = '{0}' and (title like '%{1}%' or content like '%{1}%') limit {2}, {3} order by updateTime desc".format(data.city, data.keyword, skip, count);
   AV.Query.doCloudQuery(sql).then(function(res) {
@@ -62,7 +51,6 @@ AV.Cloud.define('query', function(request, response) {
       console.log(error);
       response.success(error);
   });
-
 });
 
 
