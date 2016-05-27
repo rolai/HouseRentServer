@@ -44,7 +44,7 @@ var utils = {
       return utils.parse(url)
       .then(function(houseInfoList) {
         var needMore = true;
-        console.log("Extrat " + houseInfoList.length + " items from " + website.city);
+        console.log("Extrat " + houseInfoList.length + " items from " + url);
         _.each(houseInfoList, function(info){
           if(info.updateTime >= beforeTime) {
             utils.saveHouseInfo(info, website.source, website.city);
@@ -57,7 +57,7 @@ var utils = {
           utils.sleep(1000);
           return utils.dealOnePage(website, startPos + 25, beforeTime);
         } else {
-          console.log( website.city + " done" );
+          console.log( website.url + " done" );
           return AV.Promise.as();
         }
       })
@@ -117,13 +117,13 @@ var utils = {
      var prefix = '<div class="topic-content">';
      var surfix = '</p>';
      var startIndex = html.indexOf(prefix) + prefix.length;
-     if(startIndex <= prefix.length) return '';
+     if(startIndex <= prefix.length) return '如题';
 
      var endIndex = html.indexOf(surfix, startIndex);
      var text = html.substr(startIndex, endIndex - startIndex);
      prefix = '<p>';
      startIndex = text.indexOf(prefix) + prefix.length;
-     if(startIndex <= prefix.length) return '';
+     if(startIndex <= prefix.length) return '如题';
 
      return text.substr(startIndex).replace(/<br\/>/g, '\n');
    },

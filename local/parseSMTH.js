@@ -2,7 +2,9 @@ var AV = require('avoscloud-sdk');
 var _ = require('underscore');
 var configs = require('../configs.json').prod;
 var utils = require('../utils');
-var sourceWebsites = require('../source.json').duoban;
+var smth = require('../smth');
+var extension = require('../extension');
+var sourceWebsites = require('../source.json').smth;
 
 AV.initialize(configs.APP_ID, configs.APP_KEY, configs.MASTER_KEY);
 AV.setProduction(0);
@@ -13,7 +15,8 @@ _.each(sourceWebsites, function(website){
   query.equalTo('source', website.source);
   query.addDescending('updateTime');
 
-  var beforeTime = '05-24';
+  //var beforeTime = (new Date()).format("yyyy-MM-dd");
+  var beforeTime = "2016-05-20";
   var startPos = 0;
   query.first()
   .then(function(row) {
@@ -21,6 +24,7 @@ _.each(sourceWebsites, function(website){
       beforeTime = row.get('updateTime');
     }
 
-    return utils.dealOnePage(website, 0, beforeTime);
+    console.log(beforeTime);
+    return smth.dealOnePage(website, 1, beforeTime);
   })
 })

@@ -2,33 +2,57 @@ var AV = require('leanengine');
 var Request = require('request');
 var _ = require('underscore');
 var utils = require('./utils');
+var smth = require('./smth');
 var LinkedHome = require('./linkedHome');
-var sourceWebsites = require('./source.json').websites;
-var homes = require('./source.json').linkedHome;
 var extension = require('./extension');
+var websites = require('./source.json');
+var smthWebsites = websites.smth;
+var dbWebsites = websites.duoban;
+var homes = websites.linkedHome;
 
 /**
  * 一个简单的云代码方法
  */
 
 AV.Cloud.define('parse', function(request, response) {
-  _.each(sourceWebsites, function(website){
+  _.each(dbWebsites, function(website){
     var query = new AV.Query('House');
     query.equalTo('source', website.source);
     query.addDescending('updateTime');
 
-    var beforeTime = '05-24';
-    var startPos = 0;
+    var beforeTime = (new Date()).format("MM-dd");
     query.first()
     .then(function(row) {
       if(row){
         beforeTime = row.get('updateTime');
       }
 
+      console.log(beforeTime);
       return utils.dealOnePage(website, 0, beforeTime);
     })
     utils.sleep(1000);
   })
+
+  response.success('fine!');
+});
+
+AV.Cloud.define('parseSMTH', function(request, response) {
+    _.each(smthWebsites, function(website){
+      var query = new AV.Query('House');
+      query.equalTo('source', website.source);
+      query.addDescending('updateTime');
+
+      var beforeTime = (new Date()).format("yyyy-MM-dd");
+      query.first()
+      .then(function(row) {
+        if(row){
+          beforeTime = row.get('updateTime');
+        }
+
+        console.log(beforeTime);
+        return smth.dealOnePage(website, 1, beforeTime);
+      })
+    })
 
   response.success('fine!');
 });

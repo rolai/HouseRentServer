@@ -28,7 +28,7 @@ query.count()
                    if( prices.length <= 0) prices = utils.extractPrice(item.get('content'));
                    if( prices.length > 0) {
                        console.log(prices);
-                       item.set('price', prices);
+                       item.set('prices', prices);
                        var promise = item.save();
                        promises2.push(promise);
                    }

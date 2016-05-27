@@ -1,5 +1,5 @@
 {
-    "websites": [
+    "duoban": [
         {
             "source": "bjzf",
             "url": "https://www.douban.com/group/beijingzufang/discussion",
@@ -19,6 +19,13 @@
             "source": "szzf",
             "url": "https://www.douban.com/group/szsh/discussion",
             "city": "深圳"
+        }
+    ],
+    "smth": [
+        {
+            "source": "smth",
+            "url": "http://m.newsmth.net/board/HouseRent",
+            "city": "北京"
         }
     ],
     "linkedHome": [
