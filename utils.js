@@ -2,6 +2,7 @@ var AV = require('./av.js');
 var request = require('request');
 const assert = require('assert');
 var _ = require('underscore');
+var htmlToText = require('html-to-text');
 
 var userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36';
 
@@ -45,6 +46,7 @@ var utils = {
       .then(function(houseInfoList) {
         var needMore = true;
         console.log("Extrat " + houseInfoList.length + " items from " + url);
+        //console.log(houseInfoList);
         _.each(houseInfoList, function(info){
           if(info.updateTime >= beforeTime) {
             utils.saveHouseInfo(info, website.source, website.city);
@@ -107,7 +109,7 @@ var utils = {
         var prices = utils.extractPrice(info.title);
         if(prices.length > 0) {
             info.prices = prices;
-            console.log(info);
+            // console.log(info);
         }
       }
       return info;
@@ -119,13 +121,17 @@ var utils = {
      var startIndex = html.indexOf(prefix) + prefix.length;
      if(startIndex <= prefix.length) return '如题';
 
-     var endIndex = html.indexOf(surfix, startIndex);
-     var text = html.substr(startIndex, endIndex - startIndex);
+     var endIndex = html.indexOf(surfix, startIndex) + surfix.length;
+     var rawText = html.substr(startIndex, endIndex - startIndex);
      prefix = '<p>';
-     startIndex = text.indexOf(prefix) + prefix.length;
-     if(startIndex <= prefix.length) return '如题';
+     startIndex = rawText.indexOf(prefix);
+     if(startIndex < 0) return '如题';
+     rawText = rawText.substr(startIndex);
 
-     return text.substr(startIndex).replace(/<br\/>/g, '\n');
+     var text = htmlToText.fromString(rawText, {
+         wordwrap: false
+     });
+     return text;
    },
 
    parsePostTime: function(html) {
@@ -188,7 +194,7 @@ var utils = {
                var prices = utils.extractPrice(houseInfoList[index].content);
                if(prices.length > 0) {
                    houseInfoList[index].prices = prices;
-                   console.log(houseInfoList[index]);
+                   //console.log(houseInfoList[index]);
                }
              }
              return AV.Promise.as();

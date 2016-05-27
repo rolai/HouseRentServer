@@ -40,15 +40,29 @@ var linkedHome = {
     saveInDb: function(info, city) {
         var date = new Date();
         date.setTime(date.getTime() - 24 * 60 * 60 * 1000);
+        var dataString = date.format("yyyy-MM-dd");
 
-        var house = AV.Object.new('LinkedHome');
-        house.set('newHouseCustomerRate', info.newHouseCustomerRate);
-        house.set('dealCount', info.dealCount);
-        house.set('viewCount', info.viewCount);
-        house.set('date', date.format("yyyy-MM-dd"));
-        house.set('city', city);
-        return house.save();
-    }
+        var query = new AV.Query('LinkedHome');
+        query.equalTo('city', city);
+        query.equalTo('date', dataString);
+        return query.first()
+        .then(function(house){
+          if(house) {
+              house.set('newHouseCustomerRate', info.newHouseCustomerRate);
+              house.set('dealCount', info.dealCount);
+              house.set('viewCount', info.viewCount);
+            return house.save();
+          } else {
+            var house = AV.Object.new('LinkedHome');
+            house.set('newHouseCustomerRate', info.newHouseCustomerRate);
+            house.set('dealCount', info.dealCount);
+            house.set('viewCount', info.viewCount);
+            house.set('date', date.format("yyyy-MM-dd"));
+            house.set('city', city);
+            return house.save();
+        }
+    })
+  }
 }
 
 module.exports = linkedHome;
