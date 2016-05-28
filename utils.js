@@ -169,11 +169,23 @@ var utils = {
    },
 
    extractPrice: function(text){
-     var patt = /(\d{3,5})元/g
+     var patt1 = /(\d{3,5})(?=元|\/月|每月)/g
+     var patt2 = /(租金|价钱|价格|房租)(:|：| )*(\d{3,5})/g
      var prices = [];
      var res;
-     while ((res = patt.exec(text)) !== null) {
-       prices.push(parseInt(res[1]));
+     while ((res = patt1.exec(text)) !== null) {
+         prices.push(parseInt(res[1]));
+     }
+     while ((res = patt2.exec(text)) !== null) {
+         prices.push(parseInt(res[3]));
+     }
+
+     if(prices.length == 0){
+         var patt3 = /(\d+0)/g
+         while ((res = patt3.exec(text)) !== null) {
+             var p = parseInt(res[1]);
+             if (p < 10000 && p > 500) prices.push(p);
+         }
      }
 
      return _.uniq(prices);
@@ -182,7 +194,7 @@ var utils = {
    parse: function(url) {
      return utils.requestToPromise(url)
      .then(function(html){
-       //console.log(html);
+       console.log(html);
        var houseInfoList = utils.parseHouseList(html);
        var promises = [];
        _.each(houseInfoList, function(info, index){
