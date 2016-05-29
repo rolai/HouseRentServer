@@ -79,5 +79,8 @@
             "url": "http://xm.lianjia.com/",
             "city": "厦门"
         }
-    ]
+    ],
+    "bjhouse": {
+        "url": "http://210.75.213.188/shh/portal/bjjs/index.aspx"
+    }
 }

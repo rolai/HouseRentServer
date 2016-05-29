@@ -14,7 +14,7 @@ _.each(sourceWebsites, function(website){
   query.equalTo('source', website.source);
   query.addDescending('updateTime');
 
-  var beforeTime = '05-01';
+  var beforeTime = '05-31';
   var startPos = 0;
   query.first()
   .then(function(row) {

@@ -109,12 +109,6 @@ var smth = {
       if(info.url) info.url = 'http://m.newsmth.net' + info.url;
       if(info.postTime.indexOf('-') < 0) info.postTime = today + ' ' + info.postTime;
       if(info.updateTime.indexOf('-') < 0) info.updateTime = today + ' ' + info.updateTime;
-      if(info.title) { //prase price from title
-        var prices = utils.extractPrice(info.title);
-        if(prices.length > 0) {
-            info.prices = prices;
-        }
-      }
       return info;
    },
 
@@ -143,12 +137,11 @@ var smth = {
          if(info.url){
            var promise = smth.requestToPromise(info.url).then( function(body) {
              houseInfoList[index].content = smth.parseHouseDescription(body);
-             if(!houseInfoList[index].prices) { // parse price from content
-               var prices = utils.extractPrice(houseInfoList[index].content);
-               if(prices.length > 0) {
-                   houseInfoList[index].prices = prices;
-               }
-             }
+             var data = utils.extractInfo(body);
+             _.mapObject(data, function(val, key){
+                 houseInfoList[index][key] = val;
+             })
+
              return AV.Promise.as();
            });
            promises.push(promise);

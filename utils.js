@@ -12,19 +12,20 @@ var utils = {
       query.equalTo('url', info.url);
       return query.first()
       .then(function(house){
+        if(info.updateTime && info.updateTime.indexOf('-') < 4) {
+            info.updateTime = (new Date()).getFullYear() + info.updateTime;
+        }
+
         if(house) {
           house.set('updateTime', info.updateTime);
           return house.save();
         } else {
           var house = AV.Object.new('House');
-          house.set('title', info.title);
-          house.set('content', info.content);
-          house.set('postTime', info.postTime);
-          house.set('updateTime', info.updateTime);
-          house.set('prices', info.prices);
+          _.mapObject(info, function(val, key){
+              house.set(key, val);
+          })
           house.set('source', source);
           house.set('city', city);
-          house.set('url', info.url);
           return house.save();
         }
       })
@@ -105,13 +106,6 @@ var utils = {
         startIndex = endIndex + rule.surfix.length;
       })
 
-      if(info.title) { //prase price from title
-        var prices = utils.extractPrice(info.title);
-        if(prices.length > 0) {
-            info.prices = prices;
-            // console.log(info);
-        }
-      }
       return info;
    },
 
@@ -149,6 +143,7 @@ var utils = {
        url: url,
        jar: true,
        headers: {
+         //'Cookie': 'ASP.NET_SessionId=r1wtrp45qvgliwekq0kujv45',
          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
        }
      };
@@ -191,10 +186,32 @@ var utils = {
      return _.uniq(prices);
    },
 
+   extractInfo: function(text) {
+       var areaPatt = /(\d{1,3})(多)?平/;
+       var modelPatt = /([\d一二两三四五六七八九][居室]([\d一二两三四五六七八九]厅)?([\d一二三]厨)?([\d一二两三四五六七八九]卫)?([\d一二三]厨)?)/;
+
+       var info = {};
+       var res;
+       if ((res = areaPatt.exec(text)) !== null) {
+           info.area = res[1];
+       }
+
+       if ((res = modelPatt.exec(text)) !== null) {
+           info.model = res[1];
+       }
+
+       var prices = utils.extractPrice(text);
+       if(prices.length > 0){
+           info.prices = prices;
+       }
+
+       return info;
+   },
+
    parse: function(url) {
      return utils.requestToPromise(url)
      .then(function(html){
-       console.log(html);
+       // console.log(html);
        var houseInfoList = utils.parseHouseList(html);
        var promises = [];
        _.each(houseInfoList, function(info, index){
@@ -202,13 +219,11 @@ var utils = {
            var promise = utils.requestToPromise(info.url).then( function(body) {
              houseInfoList[index].postTime = utils.parsePostTime(body);
              houseInfoList[index].content = utils.parseHouseDescription(body);
-             if(!houseInfoList[index].prices) { // parse price from content
-               var prices = utils.extractPrice(houseInfoList[index].content);
-               if(prices.length > 0) {
-                   houseInfoList[index].prices = prices;
-                   //console.log(houseInfoList[index]);
-               }
-             }
+             //if(!houseInfoList[index].prices) { // parse price from content
+             var data = utils.extractInfo(body);
+             _.mapObject(data, function(val, key){
+                 houseInfoList[index][key] = val;
+             })
              return AV.Promise.as();
            });
            promises.push(promise);

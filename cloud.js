@@ -4,6 +4,7 @@ var _ = require('underscore');
 var utils = require('./utils');
 var smth = require('./smth');
 var LinkedHome = require('./linkedHome');
+var BJHouse = require('./bjhouse');
 var extension = require('./extension');
 var websites = require('./source.json');
 var smthWebsites = websites.smth;
@@ -97,6 +98,22 @@ AV.Cloud.define('parseLinkedHome', function(request, response) {
     response.success('fine!');
     AV.Promise.when(promises).then(function(){
         console.log('done');
+    })
+});
+
+
+AV.Cloud.define('parseBJHouse', function(request, response) {
+    BJHouse.parseTradeData()
+    .then(function(data){
+      if(data){
+          console.log(data);
+          return BJHouse.saveInDb(data);
+      } else {
+          return AV.Promise.as();
+      }
+    })
+    .then(function() {
+        response.success('fine!');
     })
 });
 
