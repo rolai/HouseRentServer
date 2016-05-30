@@ -25,7 +25,7 @@ AV.Cloud.define('parse', function(request, response) {
     query.first()
     .then(function(row) {
       if(row){
-        beforeTime = row.get('updateTime');
+        beforeTime = row.get('updateTime').substr(5);;
       }
 
       console.log(beforeTime);

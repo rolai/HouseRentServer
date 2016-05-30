@@ -8,14 +8,20 @@ var userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537
 
 var utils = {
     saveHouseInfo: function(info, source, city){
-      var query = new AV.Query('House');
-      query.equalTo('url', info.url);
+      if(info.updateTime && info.updateTime.indexOf('-') < 4) {
+        info.updateTime = (new Date()).getFullYear() + '-' + info.updateTime;
+      }
+
+      var q1 = new AV.Query('House');
+      q1.equalTo('url', info.url);
+      var q2 = new AV.Query('House');
+      q2.equalTo('city', city);
+      q2.equalTo('title', info.title);
+      q2.startsWith('postTime', info.postTime.substr(0, 10));//同一天只能发一个相同标题的房源
+
+      var query = AV.Query.or(q1, q2);
       return query.first()
       .then(function(house){
-        if(info.updateTime && info.updateTime.indexOf('-') < 4) {
-            info.updateTime = (new Date()).getFullYear() + info.updateTime;
-        }
-
         if(house) {
           house.set('updateTime', info.updateTime);
           return house.save();
@@ -48,21 +54,26 @@ var utils = {
         var needMore = true;
         console.log("Extrat " + houseInfoList.length + " items from " + url);
         //console.log(houseInfoList);
+        var promises = [];
         _.each(houseInfoList, function(info){
           if(info.updateTime >= beforeTime) {
-            utils.saveHouseInfo(info, website.source, website.city);
+            var p = utils.saveHouseInfo(info, website.source, website.city);
+            promises.push(p);
           } else {
             needMore = false;
           }
         })
 
-        if(needMore){
-          utils.sleep(1000);
-          return utils.dealOnePage(website, startPos + 25, beforeTime);
-        } else {
-          console.log( website.url + " done" );
-          return AV.Promise.as();
-        }
+        return AV.Promise.when(promises)
+        .then(function(){
+            if(needMore){
+              utils.sleep(500);
+              return utils.dealOnePage(website, startPos + 25, beforeTime);
+            } else {
+              console.log( website.url + " done" );
+              return AV.Promise.as();
+            }
+        })
       })
     },
 
@@ -188,7 +199,7 @@ var utils = {
 
    extractInfo: function(text) {
        var areaPatt = /(\d{1,3})(多)?平/;
-       var modelPatt = /([\d一二两三四五六七八九][居室]([\d一二两三四五六七八九]厅)?([\d一二三]厨)?([\d一二两三四五六七八九]卫)?([\d一二三]厨)?)/;
+       var modelPatt = /([\d一二两三四五六七八九][居室房]([123一二两三]厅)?([12一二两]厨)?([1234一二两三四]卫)?([12一二两]厨)?)/;
 
        var info = {};
        var res;
@@ -211,7 +222,7 @@ var utils = {
    parse: function(url) {
      return utils.requestToPromise(url)
      .then(function(html){
-       // console.log(html);
+       //console.log(html);
        var houseInfoList = utils.parseHouseList(html);
        var promises = [];
        _.each(houseInfoList, function(info, index){
@@ -220,7 +231,7 @@ var utils = {
              houseInfoList[index].postTime = utils.parsePostTime(body);
              houseInfoList[index].content = utils.parseHouseDescription(body);
              //if(!houseInfoList[index].prices) { // parse price from content
-             var data = utils.extractInfo(body);
+             var data = utils.extractInfo(info.title + body);
              _.mapObject(data, function(val, key){
                  houseInfoList[index][key] = val;
              })

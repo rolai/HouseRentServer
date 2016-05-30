@@ -14,18 +14,18 @@ _.each(sourceWebsites, function(website){
   query.equalTo('source', website.source);
   query.addDescending('updateTime');
 
-  var beforeTime = '05-31';
+  var beforeTime = '05-01';
   var startPos = 0;
-  query.first()
+  var p =  query.first()
   .then(function(row) {
     if(row){
-      beforeTime = row.get('updateTime');
+      beforeTime = row.get('updateTime').substr(5);
     }
 
     utils.sleep(2000);
-    var p = utils.dealOnePage(website, 0, beforeTime);
-    promises.push(p);
+    return utils.dealOnePage(website, 0, beforeTime);
   })
+  promises.push(p);
 })
 
 AV.Promise.when(promises).then(function(){

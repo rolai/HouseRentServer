@@ -7,7 +7,7 @@
         },
         {
             "source": "shzf",
-            "url": "https://www.douban.com/group/shzf/discussion",
+            "url": "https://www.douban.com/group/shanghaizufang/discussion",
             "city": "上海"
         },
         {
@@ -17,8 +17,33 @@
         },
         {
             "source": "szzf",
-            "url": "https://www.douban.com/group/szsh/discussion",
+            "url": "https://www.douban.com/group/106955/discussion",
             "city": "深圳"
+        },
+        {
+            "source": "cdzf",
+            "url": "https://www.douban.com/group/CDzufang/",
+            "city": "成都"
+        },
+        {
+            "source": "hzzf",
+            "url": "https://www.douban.com/group/145219/discussion",
+            "city": "杭州"
+        },
+        {
+            "source": "fangzi",
+            "url": "https://www.douban.com/group/fangzi/discussion",
+            "city": "北京"
+        },
+        {
+            "source": "26926",
+            "url": "https://www.douban.com/group/26926/discussion",
+            "city": "北京"
+        },
+        {
+            "source": "zhufang",
+            "url": "https://www.douban.com/group/zhufang/discussion",
+            "city": "北京"
         }
     ],
     "smth": [

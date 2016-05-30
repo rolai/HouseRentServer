@@ -95,9 +95,9 @@ var BJHouse = {
             var data = {};
             var startIndex = 0;
             var endIndex = 0;
-
+            //console.log(html);
             _.each(bjhouseConfigs.sections, function(section){
-                var startIndex = html.indexOf(section.prefix, startIndex);
+                startIndex = html.indexOf(section.prefix, startIndex);
                 if(startIndex < 0) return null;
                 var endIndex = html.indexOf(section.surfix, startIndex) + section.surfix.length;
                 var rawText = html.substr(startIndex, endIndex - startIndex);
@@ -112,7 +112,7 @@ var BJHouse = {
                     var e = rawText.indexOf(item.surfix, s);
                     var text = rawText.substr(s, e - s);
                     //console.log(text);
-                    data[item.field] = parseInt(text);
+                    data[item.field] = parseFloat(text);
                     s = e;
                 })
 

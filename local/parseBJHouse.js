@@ -8,7 +8,7 @@ AV.initialize(configs.APP_ID, configs.APP_KEY, configs.MASTER_KEY);
 AV.setProduction(0);
 AV.Cloud.useMasterKey();
 
-/*
+
 BJHouse.parseTradeData()
 .then(function(data){
   if(data){
@@ -21,10 +21,11 @@ BJHouse.parseTradeData()
 .then(function() {
     console.log('done');
 })
-*/
 
+/*
 var beforeTime = '2016-01-01';
 BJHouse.dealOnePage(1, beforeTime)
 .then(function() {
     console.log('done');
 })
+*/
