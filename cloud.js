@@ -103,7 +103,7 @@ AV.Cloud.define('parseLinkedHome', function(request, response) {
 
 
 AV.Cloud.define('parseBJHouse', function(request, response) {
-    BJHouse.parseTradeData()
+    BJHouse.parse()
     .then(function(data){
       if(data){
           console.log(data);

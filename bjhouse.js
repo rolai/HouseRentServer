@@ -3,100 +3,184 @@ var request = require('request');
 var _ = require('underscore');
 var utils = require('./utils');
 var extension = require('./extension');
+var LinkedHome = require('./linkedHome');
 
-var bjhouseConfigs = {
-    url: "http://210.75.213.188/shh/portal/bjjs/index.aspx",
-    sections: [
-        {
-            prefix: '<table class="tjInfo"',
-            surfix: '</table>',
-            items: [
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'checkedAll'
-                },
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'checkedAllArea'
-                },
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'checkedHouse'
-                },
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'checkedHouseArea'
-                }
-            ]
-        },
-        {
-            prefix: '<table class="tjInfo"',
-            surfix: '</table>',
-            items: [
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'dealAllInLastMonth'
-                },
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'dealAllAreaInLastMonth'
-                },
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'dealHouseInLastMonth'
-                },
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'dealHouseAreaInLastMonth'
-                }
-            ]
-        },
-        {
-            prefix: '<table class="tjInfo"',
-            surfix: '</table>',
-            items: [
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'dealAll'
-                },
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'dealAllArea'
-                },
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'dealHouse'
-                },
-                {
-                    prefix: '<td>',
-                    surfix: '</td>',
-                    field: 'dealHouseArea'
-                }
-            ]
-        }
-    ]
+var bjhouseConfigs =  {
+    trade: {
+        url: "http://210.75.213.188/shh/portal/bjjs/index.aspx",
+        sections: [
+            {
+                prefix: '<table class="tjInfo"',
+                surfix: '</table>',
+                items: [
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'checkedAll'
+                    },
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'checkedAllArea'
+                    },
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'checkedHouse'
+                    },
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'checkedHouseArea'
+                    }
+                ]
+            },
+            {
+                prefix: '<table class="tjInfo"',
+                surfix: '</table>',
+                items: [
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'dealAllInLastMonth'
+                    },
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'dealAllAreaInLastMonth'
+                    },
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'dealHouseInLastMonth'
+                    },
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'dealHouseAreaInLastMonth'
+                    }
+                ]
+            },
+            {
+                prefix: '<table class="tjInfo"',
+                surfix: '</table>',
+                items: [
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'dealAll'
+                    },
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'dealAllArea'
+                    },
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'dealHouse'
+                    },
+                    {
+                        prefix: '<td>',
+                        surfix: '</td>',
+                        field: 'dealHouseArea'
+                    }
+                ]
+            }
+        ]
+    },
+    newSell: {
+        url: "http://www.bjjs.gov.cn/tabid/2167/default.aspx",
+        sections: [
+            {
+                prefix: '可售房源统计"',
+                surfix: '</table>',
+                items: [
+                    {
+                        prefix: 'class="fontfamily">',
+                        surfix: '</span>',
+                        field: 'sellingAll'
+                    },
+                    {
+                        prefix: 'class="fontfamily">',
+                        surfix: '</span>',
+                        field: 'sellingAllArea'
+                    },
+                    {
+                        prefix: 'class="fontfamily">',
+                        surfix: '</span>',
+                        field: 'sellingHouse'
+                    },
+                    {
+                        prefix: 'class="fontfamily">',
+                        surfix: '</span>',
+                        field: 'sellingHouseArea'
+                    }
+                ]
+            },
+            {
+                prefix: '新发布房源',
+                surfix: '</table>',
+                items: [
+                    {
+                        prefix: 'class="fontfamily">',
+                        surfix: '</span>',
+                        field: 'newSellingAll'
+                    },
+                    {
+                        prefix: 'class="fontfamily">',
+                        surfix: '</span>',
+                        field: 'newSellingAllArea'
+                    },
+                    {
+                        prefix: 'class="fontfamily">',
+                        surfix: '</span>',
+                        field: 'newSellingHouse'
+                    },
+                    {
+                        prefix: 'class="fontfamily">',
+                        surfix: '</span>',
+                        field: 'newSellingHouseArea'
+                    }
+                ]
+            }
+        ]
+    }
 }
+
 var BJHouse = {
-    parseTradeData: function() {
-        var url = bjhouseConfigs.url;
+
+    parse: function() {
+        var data = {};
+        return BJHouse.parseTradeData(bjhouseConfigs.trade)
+        .then(function(result){
+            data = result;
+            return BJHouse.parseTradeData(bjhouseConfigs.newSell);
+        })
+        .then(function(result) {
+            _.mapObject(result, function(val, key){
+                data[key] = val;
+            })
+            return LinkedHome.parse('http://bj.lianjia.com/')
+        })
+        .then(function(result){
+            _.mapObject(result, function(val, key){
+                data[key] = val;
+            })
+            return AV.Promise.as(data);
+        })
+    },
+
+    parseTradeData: function(configs) {
+        var url = configs.url;
+        console.log(url);
         return utils.requestToPromise(url)
         .then( function(html) {
             var data = {};
             var startIndex = 0;
             var endIndex = 0;
             //console.log(html);
-            _.each(bjhouseConfigs.sections, function(section){
+            _.each(configs.sections, function(section){
                 startIndex = html.indexOf(section.prefix, startIndex);
                 if(startIndex < 0) return null;
                 var endIndex = html.indexOf(section.surfix, startIndex) + section.surfix.length;

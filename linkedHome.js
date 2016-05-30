@@ -23,12 +23,12 @@ var linkedHome = {
             surfix = '</label>';
             startIndex = 0;
             var info = {};
-            _.each(['newHouseCustomerRate', 'dealCount', 'viewCount'], function(item){
+            _.each(['ljNewHCRate', 'ljDeal', 'ljView'], function(item){
                 startIndex = text.indexOf(prefix, startIndex) + prefix.length;
                 endIndex = text.indexOf(surfix, startIndex);
                 if( startIndex >= prefix.length && endIndex > startIndex) {
                     var value = text.substr(startIndex, endIndex - startIndex);
-                    info[item] =  item == 'new_house_customer_rate' ? parseFloat(value) : parseInt(value);
+                    info[item] =  parseFloat(value);
                 }
             })
 

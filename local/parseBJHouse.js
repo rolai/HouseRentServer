@@ -9,7 +9,7 @@ AV.setProduction(0);
 AV.Cloud.useMasterKey();
 
 
-BJHouse.parseTradeData()
+BJHouse.parse()
 .then(function(data){
   if(data){
       console.log(data);
