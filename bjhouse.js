@@ -93,7 +93,7 @@ var bjhouseConfigs =  {
         url: "http://www.bjjs.gov.cn/tabid/2167/default.aspx",
         sections: [
             {
-                prefix: '可售房源统计"',
+                prefix: '可售房源统计',
                 surfix: '</table>',
                 items: [
                     {
@@ -161,7 +161,7 @@ var BJHouse = {
             _.mapObject(result, function(val, key){
                 data[key] = val;
             })
-            return LinkedHome.parse('http://bj.lianjia.com/')
+            return LinkedHome.parse('http://bj.lianjia.com/');
         })
         .then(function(result){
             _.mapObject(result, function(val, key){
@@ -179,18 +179,19 @@ var BJHouse = {
             var data = {};
             var startIndex = 0;
             var endIndex = 0;
-            //console.log(html);
+            // console.log(html);
             _.each(configs.sections, function(section){
+                //console.log(section);
                 startIndex = html.indexOf(section.prefix, startIndex);
-                if(startIndex < 0) return null;
+                // if(startIndex < 0) return null;
                 var endIndex = html.indexOf(section.surfix, startIndex) + section.surfix.length;
                 var rawText = html.substr(startIndex, endIndex - startIndex);
 
-                //console.log(rawText);
+                // console.log(rawText);
                 var s = 0;
                 _.each(section.items, function(item){
                     s = rawText.indexOf(item.prefix, s);
-                    if(s < 0) return null;
+                    // if(s < 0) return null;
                     s += item.prefix.length;
 
                     var e = rawText.indexOf(item.surfix, s);
@@ -227,7 +228,7 @@ var BJHouse = {
               bjhouse.set(key, val);
           })
 
-          //console.log(bjhouse);
+          console.log(bjhouse);
           return bjhouse.save();
        })
   },

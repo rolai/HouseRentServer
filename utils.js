@@ -175,7 +175,7 @@ var utils = {
    },
 
    extractPrice: function(text){
-     var patt1 = /(\d{3,5})(?=元|\/月|每月)/g
+     var patt1 = /(\d{3,5})(?=元|\/月|每月|一个月)/g
      var patt2 = /(租金|价钱|价格|房租)(:|：| )*(\d{3,5})/g
      var prices = [];
      var res;
@@ -186,6 +186,7 @@ var utils = {
          prices.push(parseInt(res[3]));
      }
 
+/*
      if(prices.length == 0){
          var patt3 = /(\d+0)/g
          while ((res = patt3.exec(text)) !== null) {
@@ -193,7 +194,7 @@ var utils = {
              if (p < 10000 && p > 500) prices.push(p);
          }
      }
-
+*/
      return _.uniq(prices);
    },
 

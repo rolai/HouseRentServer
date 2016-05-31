@@ -9,20 +9,37 @@ var linkedHome = {
         return utils.requestToPromise(url)
         .then( function(html) {
             // console.log(html);
-            var prefix = '<div class="deal-price">';
+            var info = {};
+            var prefix = '二手房市场行情';
             var surfix = '</ul>';
             var startIndex = html.indexOf(prefix) + prefix.length;
-            if(startIndex < prefix.length) return null;
+            endIndex = html.indexOf(surfix, startIndex);
+            var rawText = html.substr(startIndex, endIndex - startIndex);
 
-            prefix = '<ul>'
-            startIndex = html.indexOf(prefix, startIndex) + prefix.length;
-            var endIndex = html.indexOf(surfix, startIndex);
-            var text = html.substr(startIndex, endIndex - startIndex);
+            prefix = '<label';
+            surfix = '</label>';
+            startIndex = 0;
+            _.each(['ljDealPrice', 'ljTagPrice'], function(item){
+                startIndex = rawText.indexOf(prefix, startIndex) + prefix.length;
+                endIndex = rawText.indexOf(surfix, startIndex);
+                if( startIndex >= prefix.length && endIndex > startIndex) {
+                    var value = rawText.substr(startIndex, endIndex - startIndex);
+                    console.log(value);
+                    var patt = /(\d+)/;
+                    var res;
+                    if ((res = patt.exec(value)) !== null) {
+                        info[item] =  parseFloat(res[1]);
+                    }
+                }
+            })
+
+            prefix = '<ul>';
+            startIndex = rawText.indexOf(prefix, startIndex) + prefix.length;
+            var text = rawText.substr(startIndex);
 
             prefix = '<label>';
             surfix = '</label>';
             startIndex = 0;
-            var info = {};
             _.each(['ljNewHCRate', 'ljDeal', 'ljView'], function(item){
                 startIndex = text.indexOf(prefix, startIndex) + prefix.length;
                 endIndex = text.indexOf(surfix, startIndex);
@@ -32,7 +49,7 @@ var linkedHome = {
                 }
             })
 
-            console.log(info);
+            // console.log(info);
             return AV.Promise.as(info);
         });
     },

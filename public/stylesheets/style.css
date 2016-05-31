@@ -5,3 +5,15 @@ body {
 a {
   color: #00b7ff;
 }
+
+td {
+    width: 90px;
+}
+
+.table-header{
+    font-weight: bold;
+}
+
+.container {
+    margin: 50px auto;
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>北京租房信息查询</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>北京租房信息<%= keyword %></h1>
+      <table>
+          <tr class="table-header">
+              <td style="width: 60%">标题</td>
+              <td style="width: 10%">价钱</td>
+              <td style="width: 10%">户型</td>
+              <td style="width: 20%">最后更新</td>
+          </tr>
+          <% items.forEach(function(item){ %>
+              <tr>
+                  <td><a href="<%= item.get('url') %>"><%= item.get('title') %></a></td>
+                  <td>
+                      <% if(item.get('prices')) { %>
+                          <%= item.get('prices').slice(0, 3).join(',') %>
+                      <% } %>
+                  </td>
+                  <td><%= item.get('model') %></td>
+                  <td><%= item.get('updateTime') %></td>
+              </tr>
+          <% }) %>
+      </table>
+      <p>
+          <span><a href="/bj/rent?keyword=<%= keyword %>&page=<%= page > 0 ? page - 1 : 0 %>">上一页</a></span>
+          <span><a href="/bj/rent?keyword=<%= keyword %>&page=<%= page + 1 %>">下一页</a></span>
+     </p>
+    </div>
+  </body>
+</html>

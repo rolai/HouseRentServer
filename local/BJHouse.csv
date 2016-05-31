@@ -1,5 +1,5 @@
 string,number,number,number,number,number,number,number,number,number,number,number
-date,dealAll,dealAllArea,dealHouse,dealHouseArea,ljDeal,ljView,ljNewHCRate,ljTagPrice,ljDealPrice,ljNewSell,ljAllSell
+date,dealAll,dealAllArea,dealHouse,dealHouseArea,ljDeal,ljView,ljNewHCRate,ljTagPrice,ljDealPrice,newSellingHouse,sellingHouse
 2016-05-29,382,33374.89,316,29659.49,520,30826,5,48193,45803,360,37387
 2016-05-28,211,17876.67,181,15748.93,333,32872,5.5,48193,45803,278,37358
 2016-05-27,1326,129781.88,1171,118044.85,206,9740,4.4,48193,45803,1086,37255
