@@ -2,62 +2,132 @@ var router = require('express').Router();
 var AV = require('leanengine');
 var extension = require('../extension');
 
-var fields = [
+var configs = {
+  data: [
     {
-        name: '日期',
-        key: 'date'
+      name: '日期',
+      key: 'date'
     },
     {
-        name: '签约数量',
-        key: 'dealHouse'
+      name: '网签数量',
+      key: 'dealHouse'
     },
     {
-        name: '签约面积',
-        key: 'dealHouseArea'
+      name: '网签面积',
+      key: 'dealHouseArea'
     },
     {
-        name: '核验数量',
-        key: 'checkedHouse'
+      name: '待售房源',
+      key: 'sellingHouse'
     },
     {
-        name: '核验面积',
-        key: 'checkedHouseArea'
+      name: '链家成交量',
+      key: 'ljDeal'
     },
     {
-        name: '待售房源',
-        key: 'sellingHouse'
+      name: '链家带看量',
+      key: 'ljView'
     },
     {
-        name: '链家成交量',
-        key: 'ljDeal'
+      name: '新增房客比',
+      key: 'ljNewHCRate'
     },
     {
-        name: '链家带看量',
-        key: 'ljView'
+      name: '成交均价',
+      key: 'ljDealPrice'
     },
     {
-        name: '链家新增房客比',
-        key: 'ljNewHCRate'
-    },
-    {
-        name: '成交均价',
-        key: 'ljDealPrice'
-    },
-    {
-        name: '挂牌均价',
-        key: 'ljTagPrice'
+      name: '挂牌均价',
+      key: 'ljTagPrice'
     }
-]
-// 查询 Todo 列表
-router.get('/review', function(req, res, next) {
+  ],
+  volume: [
+    {
+      name: '日期',
+      key: 'date'
+    },
+    {
+      name: '网签数量',
+      key: 'dealHouse'
+    },
+    {
+      name: '待售房源',
+      key: 'sellingHouse'
+    },
+    {
+      name: '链家成交量',
+      key: 'ljDeal'
+    }
+  ],
+  price: [
+    {
+      name: '日期',
+      key: 'date'
+    },
+    {
+      name: '成交均价',
+      key: 'ljDealPrice'
+    },
+    {
+      name: '挂牌均价',
+      key: 'ljTagPrice'
+    }
+  ],
+  linkedhome: [
+    {
+      name: '日期',
+      key: 'date'
+    },
+    {
+      name: '链家成交量',
+      key: 'ljDeal'
+    },
+    {
+      name: '链家带看量',
+      key: 'ljView'
+    },
+    {
+      name: '新增房客比',
+      key: 'ljNewHCRate'
+    },
+    {
+      name: '成交均价',
+      key: 'ljDealPrice'
+    },
+    {
+      name: '挂牌均价',
+      key: 'ljTagPrice'
+    }
+  ]
+}
+
+router.get('/:view', function(req, res, next) {
+  var view = req.params.view;
+  if(['data', 'price', 'volume', 'linkedhome'].indexOf(view) < 0) view = 'volume';
+  var fields = configs[view];
+
   var query = new AV.Query('BJHouse');
   query.descending('date');
   query.limit(30);
-  query.find().then(function(results) {
+  query.find().then(function(rows) {
     //console.log(results);
-    res.render('review', {
-      items: results,
-      fields: fields
+    var data = {};
+    fields.forEach(function(field){
+      data[field.key] = [];
+    })
+    rows.forEach(function(row){
+      fields.forEach(function(field){
+        var value = row.get(field.key);
+        if(field.key == 'date') value = "'" + value + "'";
+        data[field.key].push(value)
+      })
+    })
+
+    res.render(view, {
+      items: rows,
+      fields: fields,
+      data: data,
+      view: view
     });
   }, function(err) {
       next(err);

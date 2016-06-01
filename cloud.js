@@ -86,7 +86,7 @@ AV.Cloud.define('parseLinkedHome', function(request, response) {
        console.log(website)
        var promise = LinkedHome.parse(website.url)
        .then(function(info){
-          if(info && info.dealCount){
+          if(info && info.ljDeal){
               return LinkedHome.saveInDb(info, website.city);
           } else {
               return AV.Promise.as();
@@ -103,7 +103,7 @@ AV.Cloud.define('parseLinkedHome', function(request, response) {
 
 
 AV.Cloud.define('parseBJHouse', function(request, response) {
-    BJHouse.parse()
+    var promise = BJHouse.parse()
     .then(function(data){
       if(data){
           console.log(data);
@@ -112,9 +112,15 @@ AV.Cloud.define('parseBJHouse', function(request, response) {
           return AV.Promise.as();
       }
     })
+
+    promise.then(function(){
+        console.log('done');
+    })
+    response.success('fine!');
+    /*
     .then(function() {
         response.success('fine!');
-    })
+    })*/
 });
 
 module.exports = AV.Cloud;

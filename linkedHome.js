@@ -24,7 +24,7 @@ var linkedHome = {
                 endIndex = rawText.indexOf(surfix, startIndex);
                 if( startIndex >= prefix.length && endIndex > startIndex) {
                     var value = rawText.substr(startIndex, endIndex - startIndex);
-                    console.log(value);
+                    //console.log(value);
                     var patt = /(\d+)/;
                     var res;
                     if ((res = patt.exec(value)) !== null) {
@@ -55,30 +55,27 @@ var linkedHome = {
     },
 
     saveInDb: function(info, city) {
-        var date = new Date();
-        date.setTime(date.getTime() - 24 * 60 * 60 * 1000);
-        var dataString = date.format("yyyy-MM-dd");
+      //console.log(info);
+      var date = new Date();
+      date.setTime(date.getTime() - 24 * 60 * 60 * 1000);
+      var dataString = date.format("yyyy-MM-dd");
 
-        var query = new AV.Query('LinkedHome');
-        query.equalTo('city', city);
-        query.equalTo('date', dataString);
-        return query.first()
-        .then(function(house){
-          if(house) {
-              house.set('newHouseCustomerRate', info.newHouseCustomerRate);
-              house.set('dealCount', info.dealCount);
-              house.set('viewCount', info.viewCount);
-            return house.save();
-          } else {
-            var house = AV.Object.new('LinkedHome');
-            house.set('newHouseCustomerRate', info.newHouseCustomerRate);
-            house.set('dealCount', info.dealCount);
-            house.set('viewCount', info.viewCount);
-            house.set('date', date.format("yyyy-MM-dd"));
-            house.set('city', city);
-            return house.save();
+      var query = new AV.Query('LinkedHome');
+      query.equalTo('city', city);
+      query.equalTo('date', dataString);
+      return query.first()
+      .then(function(house){
+        if(!house) {
+          var house = AV.Object.new('LinkedHome');
+          house.set('date', dataString);
+          house.set('city', city);
         }
-    })
+
+        _.mapObject(info, function(val, key){
+            house.set(key, val);
+        })
+        return house.save();
+      })
   }
 }
 

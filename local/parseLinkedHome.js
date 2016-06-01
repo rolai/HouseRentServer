@@ -17,7 +17,7 @@ _.each(homes, function(website){
    console.log(website)
    var promise = LinkedHome.parse(website.url)
    .then(function(info){
-      if(info && info.dealCount){
+      if(info && info.ljDeal){
           return LinkedHome.saveInDb(info, website.city);
       } else {
           return AV.Promise.as();

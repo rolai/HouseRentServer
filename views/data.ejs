@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html>
+  <% include partials/header %>
+    <h1>北京二手房交易数据</h1>
+    <p style="text-align: center; margin-bottom: 50px;">获取更多数据请联系：tolairf@163.com</p>
+    
+    <table style="">
+        <tr class="table-header">
+            <% fields.forEach(function(field){ %>
+                <td><%= field.name %></td>
+            <% }) %>
+        </tr>
+        <% items.forEach(function(item){ %>
+            <tr>
+                <% fields.forEach(function(field){ %>
+                    <td><%= item.get(field.key) %></td>
+                <% }) %>
+            </tr>
+        <% }) %>
+    </table>
+
+  <% include partials/footer %>
+</html>

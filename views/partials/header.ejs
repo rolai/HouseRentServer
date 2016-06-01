@@ -1,0 +1,34 @@
+<head>
+  <title>北京二手房交易数据</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link href="/lib/c3.min.css" rel="stylesheet" type="text/css">
+  <!-- 新 Bootstrap 核心 CSS 文件 -->
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+<body>
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">北京二手房市场</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">北京二手房市场</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li <%= view == 'volume' ? 'class=active': '' %>><a href="volume">交易量走势</a></li>
+          <li <%= view == 'price' ? 'class=active': '' %>><a href="price">交易价格走势</a></li>
+          <li <%= view == 'linkedhome' ? 'class=active': '' %>><a href="linkedhome">链家数据</a></li>
+          <li <%= view == 'data' ? 'class=active': '' %>><a href="data">详细数据</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">

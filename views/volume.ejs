@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html>
+  <% include partials/header %>
+
+    <h2>成交量走势</h2>
+    <p style="text-align: center;">获取更多数据请联系：tolairf@163.com</p>
+    <div id="tradeLine"></div>
+
+    <h2>待售房源库存走势</h2>
+    <p style="text-align: center;">获取更多数据请联系：tolairf@163.com</p>
+    <div id="SellingLine"></div>
+
+  <% include partials/footer %>
+
+  <script src="/lib/d3.v3.min.js" charset="utf-8"></script>
+  <script src="/lib/c3.min.js"></script>
+  <script>
+    var tradeChart = c3.generate({
+      bindto: '#tradeLine',
+      data: {
+        x: 'x',
+        columns: [
+          ['x', <%- data['date'].reverse().join(',') %>],
+          ['链家成交', <%= data['ljDeal'].reverse()%>],
+          ['网上签约', <%= data['dealHouse'].reverse()%>]
+        ]
+      },
+      axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: '%Y-%m-%d'
+            }
+        },
+        y: {
+          label: {
+            text: '成交量',
+            position: 'outer-middle'
+          }
+        }
+      },
+      tooltip: {
+        title: function (d) { return  d; },
+        contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
+          var $$ = this, config = $$.config,
+             titleFormat = config.tooltip_format_title || defaultTitleFormat,
+             nameFormat = config.tooltip_format_name || function (name) { return name; },
+             valueFormat = config.tooltip_format_value || defaultValueFormat,
+             text, i, title, value, name, bgcolor;
+         for (i = 0; i < d.length; i++) {
+             if (! (d[i] && (d[i].value || d[i].value === 0))) { continue; }
+
+             if (! text) {
+                 title = titleFormat ? titleFormat(d[i].x) : d[i].x;
+                 text = "<table style='width: 180px;' class='" + $$.CLASS.tooltip + "'>" + (title || title === 0 ? "<tr><th colspan='2'>" + title + "</th></tr>" : "");
+             }
+
+             name = nameFormat(d[i].name);
+             value = valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index);
+             bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
+
+             text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[i].id + "'>";
+             text += "<td class='name' ><span style='background-color:" + bgcolor + "'></span>" + name + "</td>";
+             text += "<td class='value'>" + value + "</td>";
+             text += "</tr>";
+         }
+         return text + "</table>";
+       }
+     }
+    });
+  </script>
+  <script>
+    var tradeChart = c3.generate({
+      bindto: '#SellingLine',
+      data: {
+        x: 'x',
+        columns: [
+          ['x', <%- data['date'].reverse().join(',') %>],
+          ['待售房源', <%= data['sellingHouse'] %>]
+        ]
+      },
+      axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: '%Y-%m-%d'
+            }
+        },
+        y: {
+          label: {
+            text: '待售房源',
+            position: 'outer-middle'
+          }
+        }
+      },
+      tooltip: {
+        title: function (d) { return  d; },
+        contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
+          var $$ = this, config = $$.config,
+             titleFormat = config.tooltip_format_title || defaultTitleFormat,
+             nameFormat = config.tooltip_format_name || function (name) { return name; },
+             valueFormat = config.tooltip_format_value || defaultValueFormat,
+             text, i, title, value, name, bgcolor;
+         for (i = 0; i < d.length; i++) {
+             if (! (d[i] && (d[i].value || d[i].value === 0))) { continue; }
+
+             if (! text) {
+                 title = titleFormat ? titleFormat(d[i].x) : d[i].x;
+                 text = "<table style='width: 240px;' class='" + $$.CLASS.tooltip + "'>" + (title || title === 0 ? "<tr><th colspan='2'>" + title + "</th></tr>" : "");
+             }
+
+             name = nameFormat(d[i].name);
+             value = valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index);
+             bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
+
+             text += "<tr class='" + $$.CLASS.tooltipName + "-" + d[i].id + "'>";
+             text += "<td class='name' ><span style='background-color:" + bgcolor + "'></span>" + name + "</td>";
+             text += "<td class='value'>" + value + "</td>";
+             text += "</tr>";
+         }
+         return text + "</table>";
+       }
+     }
+    });
+  </script>
+</html>
